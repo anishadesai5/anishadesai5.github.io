@@ -21,7 +21,7 @@ description: "Anisha's Anecdotes!"
 navbar-links:
   Posts: "https://anishadesai5.github.io/"
   About Me: "aboutme"
-  Resources: "datascienceresources"
+  #Resources: "datascienceresources"
   Code Stack: "https://github.com/anishadesai5"
 
 # Image to show in the navigation bar - image must be a square (width = height)

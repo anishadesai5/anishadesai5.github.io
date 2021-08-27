@@ -19,6 +19,43 @@ tags: [HTML, CSS, Github, AB testing, Business Analytics, Hypothesis Testing]
 <li>If the student indicated 5 or more hours per week, they would be taken through the checkout process as usual. </li>
 <li>If they indicated fewer than 5 hours per week, a message would appear indicating that Udacity courses usually require a greater time commitment for successful completion, and suggesting that the student might like to access the course materials for free. At this point, the student would have the option to continue enrolling in the free trial, or access the course materials for free instead.</li>
 
+<img src="images/Espoir/1.png">
+
+<h3>Unit of Diversion: Cookie</h3> </h2>
+<p> Two types of metrics are selected for a successful experiment: Invariant and Evaluation metrics </p>
+
+<h3> Invariant Metrics </h3>
+<p>Invariant metrics are used for sanity checks or A/A experiment before running the experiment, such as checking if the distributions are the same between control and experiment group, to make sure our experiment is not inherently wrong.
+	Invariant metrics usually have a larger unit of diversion, randomly selected, or happens before the experiment starts. </p>
+
+<li>Number of cookies: Number of unique cookies to view the course overview page. </li>
+<li>Number of clicks: Number of unique cookies to click the "Start free trial" button (which happens before the free trial screener is trigger).</li>
+<li>Click-through-probability: Number of unique cookies to click the "Start free trial" button divided by number of unique cookies to view the course overview page. </li>
+
+<p>In this case, the goal of measurement is how many students will allocate more than 5 hours a week for Udacity courses, which happens before students enrolling in the courses. 
+	And thus the clicks and cookies related metircs are for the invariant metircs.User-id, however, will be tracked after enrolling the course,which is not effective.</p>
+
+
+<p>Here is a screenshot of what the experiments look like:- </p>
+</h3>
+
+
+<img src="images/Espoir/1.png">
+
+<h2> Hypothesis </h2>
+
+<li><b> Null Hypothesis: </b> This approach might not make a significant change and might not be effective in reducing the early Udacity course cancellation.</li>
+<li><b> Alternative Hypothesis: </b> It might reduce the number of frustrated students who left the free trial because they didn’t have enough time, without significantly reducing the number of students to continue past the free trial and eventually complete the course.</li>
+
+<h2> Experiment Setup </h2>
+<b>Unit of Diversion: Cookie</b>
+
+<h2> Metric Choice </h2>
+<p> Two types of metrics are selected for a successful experiment: Invariant and Evaluation metrics </p>
+
+<h3> Invariant Metrics </h3>
+
+
 <h2><span style="text-decoration: underline;"><strong><a href = "https://www.linkedin.com/posts/ecstechhq_futureofwork-hackathon-innovation-activity-6822957433044951040-LYjq" target="_blank">ECS </a>Hackathon</strong></span></h2>
 <h3>Topic for the Hackathon: Future of Work - A data-driven approach </h3>
 <p>

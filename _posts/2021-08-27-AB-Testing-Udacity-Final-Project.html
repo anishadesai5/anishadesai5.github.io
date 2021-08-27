@@ -21,24 +21,7 @@ tags: [HTML, CSS, Github, AB testing, Business Analytics, Hypothesis Testing]
 
 <img src="images/Espoir/1.png">
 
-<h3>Unit of Diversion: Cookie</h3> </h2>
-<p> Two types of metrics are selected for a successful experiment: Invariant and Evaluation metrics </p>
-
-<h3> Invariant Metrics </h3>
-<p>Invariant metrics are used for sanity checks or A/A experiment before running the experiment, such as checking if the distributions are the same between control and experiment group, to make sure our experiment is not inherently wrong.
-	Invariant metrics usually have a larger unit of diversion, randomly selected, or happens before the experiment starts. </p>
-
-<li>Number of cookies: Number of unique cookies to view the course overview page. </li>
-<li>Number of clicks: Number of unique cookies to click the "Start free trial" button (which happens before the free trial screener is trigger).</li>
-<li>Click-through-probability: Number of unique cookies to click the "Start free trial" button divided by number of unique cookies to view the course overview page. </li>
-
-<p>In this case, the goal of measurement is how many students will allocate more than 5 hours a week for Udacity courses, which happens before students enrolling in the courses. 
-	And thus the clicks and cookies related metircs are for the invariant metircs.User-id, however, will be tracked after enrolling the course,which is not effective.</p>
-
-
 <p>Here is a screenshot of what the experiments look like:- </p>
-</h3>
-
 
 <img src="images/Espoir/1.png">
 
@@ -54,8 +37,83 @@ tags: [HTML, CSS, Github, AB testing, Business Analytics, Hypothesis Testing]
 <p> Two types of metrics are selected for a successful experiment: Invariant and Evaluation metrics </p>
 
 <h3> Invariant Metrics </h3>
+<p>Invariant metrics are used for sanity checks or A/A experiment before running the experiment, such as checking if the distributions are the same between control and experiment group, to make sure our experiment is not inherently wrong.
+	Invariant metrics usually have a larger unit of diversion, randomly selected, or happens before the experiment starts. </p>
 
+<li>Number of cookies: Number of unique cookies to view the course overview page. </li>
+<li>Number of clicks: Number of unique cookies to click the "Start free trial" button (which happens before the free trial screener is trigger).</li>
+<li>Click-through-probability: Number of unique cookies to click the "Start free trial" button divided by number of unique cookies to view the course overview page. </li>
 
+<p>In this case, the goal of measurement is how many students will allocate more than 5 hours a week for Udacity courses, which happens before students enrolling in the courses. 
+	And thus the clicks and cookies related metircs are for the invariant metircs.User-id, however, will be tracked after enrolling the course,which is not effective.</p>
+
+<h3> Evaluation Metrics </h3>
+
+<p> Evaluation metrics are the metrics in which we expect to see a change, and are relevant to the business goals we aim to achieve. 
+	For each metric we state a Dmin - which marks the minimum change which is practically significant to the business. 
+	For instance, stating that any increase in retention that is under 2%, even if statistically significant, is not practical to the business </p>
+
+<li>Gross conversion: Number of user-ids to complete checkout and enroll in the free trial divided by number of unique cookies to click the "Start free trial" button.<li>
+<li>Retention: Number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by number of user-ids to complete checkout.<li>
+<li> Net conversion: Number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by the number of unique cookies to click the "Start free trial" button.<li>
+	
+<p>Gross Conversion will be a good metric. 
+Gross conversion means the number of enrolled divided by number of clicks. 
+And thus in the experiment group, we hypothesized the number of enrollment will decrease after answering the screener questions, given those who selected <5 hour will not be encouraged to enroll.</p>
+
+<p> Retention ratio can also be a good evaluation matric because the retention ratio in experiment group is expected to be higher because of low enrolment , 
+if experiment meets the assumption. 
+After seeing the message , there might be fewer users who would enrol and hence retention would be higher because it should filter out those users who can leave the course as frustrated user. </p>
+
+<p> Net conversion is number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by the number of unique cookies to click the ”Start free trial” button. 
+	As per the intention and assumption of the experiment , experiment group users are made aware that the course require some minimum of hours each week by showing the pop message at the time of enrolment. 
+	This message should filter out those users who cannot devote the required hours and are prone to be frustrated later on.
+	This ratio should be different among control group users and experiment group users, if experiment’s assumptions holds true.Hence , it can be used as evaluation metric</p>
+
+<p>Gross Conversion, will show us whether we lower our costs by introducing the new pop up. 
+	Net conversion will show how the change affects our revenues. 
+	After the experiment, we expect that, Gross conversion should have a practically significant decrease, and Net conversion should have a statistically significant increase.</p>
+	
+<h2>Measuring Standard Deviation of evaluation metrics</h2>
+
+<p>For each of the metrics the standard deviation is calculated for a sample size of 5000 unique cookies visiting the course overview page. 
+	It is asked to calculate the variability of the metrics, i.e. standard deviation of them. 
+	It is probably the “standard deviation of the sampling distribution” or standard error(SE), rather than the simple SD.</p>
+	
+<table width="405">
+<tbody>
+<tr>
+<td width="328">Unique cookies to view course overview page per day:</td>
+<td width="77">40000</td>
+</tr>
+<tr>
+<td>Unique cookies to click "Start free trial" per day:</td>
+<td>3200</td>
+</tr>
+<tr>
+<td>Enrollments per day:</td>
+<td>660</td>
+</tr>
+<tr>
+<td>Click-through-probability on "Start free trial":</td>
+<td>0.08</td>
+</tr>
+<tr>
+<td>Probability of enrolling, given click:</td>
+<td>0.20625</td>
+</tr>
+<tr>
+<td>Probability of payment, given enroll:</td>
+<td>0.53</td>
+</tr>
+<tr>
+<td>Probability of payment, given click</td>
+<td>0.1093125</td>
+</tr>
+</tbody>
+</table>
+
+	
 <h2><span style="text-decoration: underline;"><strong><a href = "https://www.linkedin.com/posts/ecstechhq_futureofwork-hackathon-innovation-activity-6822957433044951040-LYjq" target="_blank">ECS </a>Hackathon</strong></span></h2>
 <h3>Topic for the Hackathon: Future of Work - A data-driven approach </h3>
 <p>

@@ -16,10 +16,10 @@ tags: [HTML, CSS, Github, AB testing, Business Analytics, Hypothesis Testing]
 
 <h2><span style="text-decoration: underline;"><strong>Experiment Description</strong></span></h2>
 <p> In the experiment, Udacity tested a change where if the student clicked “start free trial”, they were asked how much time they had available to devote to the course.</p>
-<li>If the student indicated 5 or more hours per week, they would be taken through the checkout process as usual. </li>
+<li>If the student indicated 5 or more hours per week, they would be taken through  the checkout process as usual. </li>
 <li>If they indicated fewer than 5 hours per week, a message would appear indicating that Udacity courses usually require a greater time commitment for successful completion, and suggesting that the student might like to access the course materials for free. At this point, the student would have the option to continue enrolling in the free trial, or access the course materials for free instead.</li>
 
-<img src="images/AB Testing/flowchart.png">
+<img src="images/AB Testing/flowchart.PNG">
 
 <p>Here is a screenshot of what the experiments look like:- </p>
 
@@ -118,8 +118,8 @@ After seeing the message , there might be fewer users who would enrol and hence 
 <p>Enrolment rate =&nbsp; Cookies to click Start Free trail/ Enrolments per day= 3200/660 = 0.20625</p>
 <p>Number of users who enrolled in the free trial = 5000* CTR * Enrolment Rate = 5000*0.08*0.20625 = 82.5</p>
 
-<img src="images/AB Testing/screenshot.png">
-<p>&nbsp;</p>
+<img src="images/AB Testing/mathformula.png">
+
 <p>Gross Conversion SD = 0.0202</p>
 <p>Retention Ratio SD = 0.0549</p>
 <p>Net Conversion SD = 0.0156</p>
@@ -140,19 +140,19 @@ After seeing the message , there might be fewer users who would enrol and hence 
 <p>Using the <a href = "https://www.evanmiller.org/ab-testing/sample-size.html" target="_blank"> online calculator </a>		 , we calculated number of samples required as following:</p>
 <p>alpha:5%&nbsp; beta:20%</p>
 <p>Number of groups = 2 (control and experimental)</p>
-<p>&nbsp;</p>
+
 <p>Probability of enrolling, given click: 20.625%, base conversion rate, 1% min d.</p>
 <p>Samples needed: 25,835</p>
 <p>Pageviews = Samples needed * 2/CTR = 645,875</p>
-<p>&nbsp;</p>
+
 <p>Probability of payment, given enroll: 53%, base conversion rate, 1% min d.</p>
 <p>Samples needed: 39,115</p>
 <p>Pageviews = Samples needed * 2/CTR = 4,741,212</p>
-<p>&nbsp;</p>
+
 <p>Probability of payment, given click: 10.93125% base conversion rate, 0.75% min d.</p>
 <p>Samples needed: 27,413</p>
 <p>Pageviews = Samples needed * 2/CTR = 685,325</p>
-<p>&nbsp;</p>
+
 <p><em>Pageviews Required: 4,741,212</em></p>
 
 <h3>Duration vs. Exposure</h3>
@@ -172,7 +172,7 @@ After seeing the message , there might be fewer users who would enrol and hence 
 <h3> Sanity Checks </h3>
 
 <p><strong>Number of Cookies/Pageviews &amp; Number of Clicks:</strong></p>
-<p><strong>&nbsp;</strong></p>
+
 <table width="335">
 <tbody>
 <tr>
@@ -318,9 +318,9 @@ After seeing the message , there might be fewer users who would enrol and hence 
 </tbody>
 </table>
 <p><strong>&nbsp;</strong></p>
-<p>&nbsp;</p>
+
 <p>Since observed value of 0.5006 , 0.5005 and 0.08215 is within the expected range all metrics <strong>pass </strong>the Sanity Check.</p>
-<p>&nbsp;</p>
+
 <p>The workings are carried out in the <a href = "https://github.com/anishadesai5/anishadesai5.github.io/tree/main/workings/ABTesting" target = "_blank"> excel sheet </a> </p>
 
 <h2> Result Analysis </h2>
@@ -450,7 +450,6 @@ After seeing the message , there might be fewer users who would enrol and hence 
 </tbody>
 </table>
 <p><strong>&nbsp;</strong></p>
-<p>&nbsp;</p>
 <table width="681">
 <tbody>
 <tr>
@@ -572,7 +571,7 @@ After seeing the message , there might be fewer users who would enrol and hence 
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>
+
 <p>We can see that two tailed p-value is less than our alpha value hence results are statistically significant.</p>
 <p><strong>Net Conversion: </strong></p>
 <p>alpha_individual = 0.025</p>
@@ -620,10 +619,10 @@ After seeing the message , there might be fewer users who would enrol and hence 
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>
+
 <p>The result is not statistically significant , which is inline with our expectations.</p>
 <p><strong>&nbsp;</strong></p>
-<p>&nbsp;</p>
+
 
 <h3> Summary </h3>
 

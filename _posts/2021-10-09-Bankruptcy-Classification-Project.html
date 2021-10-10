@@ -14,12 +14,12 @@ tags: [bankruptcy, SAS EM, lasso regression, classification tree, random forest,
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Firm collapse prediction has been a subject of interests for almost a century and it still ranks high among hottest topics in economics. The aim of predicting financial distress is to develop a predictive model that combines various econometric measures and allows to foresee a financial condition of a firm. The purpose of the bankruptcy prediction is to assess the financial condition of a company and its future perspectives within the context of long term operation on the market.</p>
 
 <h2><span style="text-decoration: underline;"><strong>Data Processing – Sample, Explore, Modify</strong></span></h2>
-<p> We commence our data processing by using File Import Node to fetch the training data. 
-  For the purpose of data modelling, we divide our dataset into Training and Validation set using Data Partition Node. 
+<p> We commence our data processing by using <b>File Import Node</b> to fetch the training data. 
+  For the purpose of data modelling, we divide our dataset into Training and Validation set using <b>Data Partition Node</b>. 
   The input data was divided into a 80% training set and 20% validation set, for us to train and validate our models.</p>
 
 <p> Originally, the dataset had 64 predictor variables. 
-  We have connected the data partition node to a High-Performance Variable Selection node that lists predictor variables in order of their worth or the level of influence on the target variable. 
+ We have connected the data partition node to a <b>High-Performance Variable Selection node</b> that lists predictor variables in order of their worth or the level of influence on the target variable. 
   The HP variable selection node sets the variable status = ‘Rejected’ for the predictors that do not have much effect on the target variable relatively. 
   The variables that are useful for predicting the target variables retain their status = ‘Input’. The rejected variables are not used as model inputs by a successor modeling node attached to this HP Variable Selection node. 
   In our analysis, the data exported from the HP Variable selection node comprised of 33 inputs and 31 of the initial predictor variables are rejected. </p>
@@ -45,6 +45,8 @@ tags: [bankruptcy, SAS EM, lasso regression, classification tree, random forest,
   This helps in improving the stability of different non-linear models like the neural network. All the default parameters were made us of for this node.</p>
 
 
+
+<h2><span style="text-decoration: underline;"><strong>Project Diagram</strong></span></h2>
 
 <img src="images/SAS diagram.PNG">
 

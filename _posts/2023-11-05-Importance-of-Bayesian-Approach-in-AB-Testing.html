@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Importance of Bayesian Testing in AB Testing
+title: Importance of Bayesian Approach in AB Testing
 excerpt: Comparing Frequentist Approach vs Bayesian Approach
 permalink: /bayesian-approach-in-ab-testing
 publish: false
@@ -22,8 +22,9 @@ Goal is to explain how bayesian approach in AB testing helps to serve a better s
 
 <ol><b>Control</b> They get the old webpage</ol>
 <ol><b>Treatment</b>: They get the new webpage</ol>
+</p>
 
-Metric we want to track:
+<p>Metric we want to track:
 
 <img src="images/purchase conversion.PNG">
 
@@ -31,8 +32,9 @@ We have 3 weeks of logged exposure/conversion data. Let's define these terms:
 
 <li><b>Exposure</b>: A user is bucketed as control or treatment and sees their corresponding page for the first time in the experiment duration</li>
 <li><b>Conversion</b>: An exposed user makes a purchase within 7 days of being first exposed</li>
+</p>
 
-Questions you should ask when setting up a test:
+<p>Questions you should ask when setting up a test:
 
 <li>How do you think the experiment will fair?</li>
 <li>Do we have actionable next steps laid out?</li>
@@ -47,10 +49,10 @@ Github repository <a href = "https://github.com/anishadesai5/bayesian-testing" t
 
 Each row is logged when user is exposed to a webpage.
 
-<b>timestamp</b>: time the user is first exposed
-<b>group</b>: bucket
-<b>landing_page</b>: Which page are they seeing
-<b>converted</b>: Initialized to 0. Changes to 1 if the user makes a purchase within 7 days of first exposure
+<li><b>timestamp</b>: time the user is first exposed</li>
+<li><b>group</b>: bucket</li>
+<li><b>landing_page</b>: Which page are they seeing</li>
+<li><b>converted</b>: Initialized to 0. Changes to 1 if the user makes a purchase within 7 days of first exposure</li>
 
 
 

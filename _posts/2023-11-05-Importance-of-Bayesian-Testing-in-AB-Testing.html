@@ -1,1 +1,75 @@
+---
+layout: post
+title: Importance of Bayesian Testing in AB Testing
+excerpt: Comparing Frequentist Approach vs Bayesian Approach
+permalink: /bayesian-approach-in-ab-testing
+publish: false
+tags: [HTML, CSS, Github, Python,AB testing, Bayes theorem, bayesian approach]
+---
 
+<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+Github repository <a href = "https://github.com/anishadesai5/bayesian-testing" target="_blank">here</a>
+
+<h2>Introduction </h2>
+
+<p>
+Goal is to explain how bayesian approach in AB testing helps to serve a better statement by calculating the probability of the lift percentage after conducting an AB Test</p>
+
+<h3> Experiment Definition </h3>
+
+<p> In an AB Test, we split our users evenly into:
+
+1. <b>Control</b> They get the old webpage
+2. <b>Treatment</b>: They get the new webpage
+
+Metric we want to track:
+
+<img src="images/purchase conversion.PNG">
+
+We have 3 weeks of logged exposure/conversion data. Let's define these terms:
+
+<b>Exposure</b>: A user is bucketed as control or treatment and sees their corresponding page for the first time in the experiment duration
+<b>Conversion</b>: An exposed user makes a purchase within 7 days of being first exposed
+
+Questions you should ask when setting up a test:
+
+<li>How do you think the experiment will fair?</li>
+<li>Do we have actionable next steps laid out?</li>
+
+</p>
+
+<h3> Data Collection</h3>
+
+<p> Let's use some A/B testing data: <a href="https://www.kaggle.com/saraabdelaal/abtestdata"> Kaggle Datasett </a> </p>
+
+Each row is logged when user is exposed to a webpage.
+
+<b>timestamp</b>: time the user is first exposed
+<b>group</b>: bucket
+<b>landing_page</b>: Which page are they seeing
+<b>converted</b>: Initialized to 0. Changes to 1 if the user makes a purchase within 7 days of first exposure
+
+
+
+<h4> Frequentist Approach vs Bayesian Comparison</h4>
+
+<img src="images/comparison.PNG">
+
+<h5>Beta Distribution explained</h5>
+
+<p> 
+The Beta Distribution can be best explained with this article: 
+<a href="http://varianceexplained.org/statistics/beta_distribution_and_baseball/"> Beta Distribution Blog </a>
+
+The same logic has been used in the code while updating prior parameters with experiment conversion rates  
+<img src="images/Betalogic.PNG"> 
+</p>
+
+<h6> Advantages of Bayesian over Frequentist </h6>
+
+<p>
+
+<li> Results are more interpretable than the ones we got from the frequentist approach </li>
+<li> We can interpret results at any point during the experiment. Don't need to wait for an arbitrary "statsig" </li>
+</p>

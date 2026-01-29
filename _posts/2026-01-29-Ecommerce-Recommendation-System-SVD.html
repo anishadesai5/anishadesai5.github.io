@@ -1,0 +1,91 @@
+---
+layout: post
+title: E-commerce Recommendation System using SVD
+excerpt: Building recommendation systems with Singular Value Decomposition (SVD) for e-commerce
+permalink: /ecommerce-recsys-svd
+publish: false
+tags: [Machine Learning, Recommendation Systems, SVD, Matrix Factorization, E-commerce]
+---
+
+Github repository <a href = "https://github.com/anishadesai5/Ecommerice-RecSys" target="_blank">here</a>
+
+<h2>Introduction</h2>
+
+<p>
+This project implements traditional recommendation systems for e-commerce businesses using machine learning techniques. The analysis uses the Amazon Electronics Ratings Dataset, containing approximately 7.8 million ratings across 4.2 million users and 476,002 products spanning from December 1998 to July 2014.
+</p>
+
+<h2>Baseline Models</h2>
+
+<p>
+Before diving into SVD, the project establishes foundational recommendation strategies:
+</p>
+
+<li><b>Global Mean</b>: Predicts the overall average rating (4.18)</li>
+<li><b>User Bias</b>: Adjusts predictions based on individual user rating tendencies</li>
+<li><b>Item Bias</b>: Accounts for products rated consistently higher or lower</li>
+<li><b>Combined Bias</b>: Incorporates both user and item biases simultaneously</li>
+
+<p>
+The combined bias approach achieves the lowest Mean Absolute Error (0.8618), providing a benchmark for more advanced methods.
+</p>
+
+<h2>SVD (Singular Value Decomposition)</h2>
+
+<p>
+SVD is a matrix factorization technique that decomposes the sparse user-item rating matrix into latent factor representations. The core idea is to represent both users and items as vectors in a lower-dimensional latent space, where the dot product of these vectors approximates the rating.
+</p>
+
+<h3>How SVD Works</h3>
+
+<p>
+The prediction formula combines baseline components with latent factors:
+</p>
+
+<p>
+<b>r&#770;<sub>ui</sub> = &mu; + b<sub>u</sub> + b<sub>i</sub> + p<sub>u</sub><sup>T</sup>q<sub>i</sub></b>
+</p>
+
+<p>
+Where:
+<li>&mu; is the global mean rating</li>
+<li>b<sub>u</sub> is the user bias</li>
+<li>b<sub>i</sub> is the item bias</li>
+<li>p<sub>u</sub> is the user latent factor vector</li>
+<li>q<sub>i</sub> is the item latent factor vector</li>
+</p>
+
+<h3>Model Configuration</h3>
+
+<p>
+The SVD model uses:
+<li>20 latent factors</li>
+<li>20 training epochs</li>
+<li>Learning rate: 0.005</li>
+<li>Regularization: 0.02</li>
+</p>
+
+<h2>Results</h2>
+
+<p>
+SVD significantly outperforms the baseline models:
+</p>
+
+<li><b>RMSE</b>: 1.1134 (5.30% improvement over baselines)</li>
+<li><b>MAE</b>: 0.8412</li>
+
+<p>
+SVD successfully captures hidden patterns in user preferences and item characteristics that simpler models miss. The latent factors learn to represent abstract concepts like product quality, user pickiness, or category preferences without explicit feature engineering.
+</p>
+
+<h2>Key Findings</h2>
+
+<p>
+<li>SVD provides meaningful improvements over simple bias-based models</li>
+<li>All models struggle with predicting negative ratings due to dataset skew (55.6% are 5-star reviews)</li>
+<li>Errors increase substantially for 1-2 star items, suggesting the need for additional features or alternative approaches for handling sparse negative feedback</li>
+</p>
+
+<p>
+Github repository <a href = "https://github.com/anishadesai5/Ecommerice-RecSys" target="_blank">here</a>
+</p>

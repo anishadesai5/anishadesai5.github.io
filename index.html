@@ -6,9 +6,14 @@ subtitle: "Publications/Projects"
 use-site-title: true
 ---
 
-<div class="posts-list">
+<div class="posts-grid">
   {% for post in paginator.posts %}
   <article class="post-preview">
+    {% if post.icon %}
+    <div class="post-icon">
+      <i class="fa {{ post.icon }}"></i>
+    </div>
+    {% endif %}
     <a href="{{ post.url | relative_url }}">
 	  <h2 class="post-title">{{ post.title }}</h2>
 

@@ -1,0 +1,331 @@
+---
+layout: post
+title: Cox Proportional Hazards Model to Predict Customer Repurchase Behavior
+excerpt: Applying a Stratified Cox Proportional Hazards model from survival analysis to predict customer repurchase behavior at the product level
+permalink: /cox-repurchase-prediction
+publish: false
+icon: fa-heartbeat
+tags: [Survival Analysis, Cox Model, Customer Analytics, Retail, Python]
+---
+
+<h2>Introduction</h2>
+
+<p>
+If anyone who has studied the Cox Hazards Model, it is normally seen in the health industry or in actuarial modeling. I feel I learned about this model back while studying CT papers, however came across the usage of this model in the retail industry. Been fascinated by its approach in something other than insurance, which led me to dive into it deeper.
+</p>
+
+<p>
+Survival analysis is essential in domains where understanding the timing and risk of an event matters - such as cancer recurrence. In this blog, we will be using a <b>Stratified Cox Proportional Hazards model</b> to predict customer repurchase behavior at the product (SKU) level using the UCI Online Retail dataset.
+</p>
+
+<h2>What Makes It Special in Retail?</h2>
+
+<p>
+The stratified Cox model is perfect for this use case because it:
+</p>
+
+<li><b>Predicts BOTH likelihood AND timing</b> of repurchase</li>
+<li><b>Handles censoring correctly</b> - Distinguishes "haven't bought yet" from "will never buy"</li>
+<li><b>Product-specific baselines</b> - Each product gets its own repurchase timing curve</li>
+<li><b>Shared customer behaviors</b> - Frequent buyers buy ALL products more often</li>
+<li><b>Statistical efficiency</b> - Borrows strength across products</li>
+
+<h2>The Math (Simplified)</h2>
+
+<p>
+For a customer buying product <i>s</i>:
+</p>
+
+<pre><code>h(t | X, product=s) = h&#8320;&#8347;(t) x exp(&#946;&#8321; x frequency + &#946;&#8322; x recency + ... + &#946;&#8346; x feature&#8346;)
+                      ^              ^
+              Product-specific    Shared across
+              baseline hazard     all products</code></pre>
+
+<h2>Pipeline Overview</h2>
+
+<pre><code>Raw Transactions
+    |
+Data Cleaning (remove cancellations, nulls)
+    |
+Create Survival Dataset
+    |
+    For each Customer x Product:
+    - DURATION_DAYS: Days between purchases
+    - EVENT: 1 = repurchased, 0 = censored
+    |
+Feature Engineering
+    |
+    Customer Features:
+    - RECENCY: Days since first purchase
+    - FREQUENCY: Total purchase count
+    - MONETARY: Average spend
+    - PRODUCT_FREQUENCY: Times bought this SKU
+    - DAYS_SINCE_FIRST: Days since first bought this SKU
+    |
+Train Stratified Cox Model
+    |
+    strata=['StockCode'] &larr; Each product gets own baseline
+    |
+Predict & Rank Customers
+    |
+    For each product:
+    - Risk score (relative hazard)
+    - P(repurchase in 30/60/90 days)
+    |
+Business Insights & Recommendations</code></pre>
+
+<h2>Key Code Snippet</h2>
+
+<pre><code class="language-python">from lifelines import CoxPHFitter
+
+# Train stratified model
+cph = CoxPHFitter(penalizer=0.01)
+cph.fit(
+    train_df,
+    duration_col='DURATION_DAYS',
+    event_col='EVENT',
+    strata=['StockCode'],  # Each product gets own baseline
+)
+
+# Predict repurchase probability
+risk_scores = cph.predict_partial_hazard(test_customers)
+survival_30d = cph.predict_survival_function(test_customers, times=[30])
+repurchase_prob_30d = 1 - survival_30d</code></pre>
+
+<h2>Understanding Censored Events</h2>
+
+<p>
+Censored means "last observed purchase where we don't know what happens next". That means every customer-product pair has at least 1 censored record.
+</p>
+
+<h3>Customer A - Shampoo (Two Purchases)</h3>
+
+<p>
+<b>Key Point:</b> Customer A bought <b>2 times</b>. The first purchase is NOT censored, but the <b>last purchase IS censored</b>.
+</p>
+
+<pre><code>Timeline:
+Feb 15           Apr 1           ...           Dec 9
+  |               |                             |
+  Buy             Buy                           [Observation Ends]
+
+Survival Records Created:
+
+Record 1:
+  - Start: Feb 15 purchase
+  - End: Apr 1 purchase (next purchase)
+  - DURATION_DAYS: 45
+  - EVENT: 1 (NOT censored - we SAW the repurchase)
+
+Record 2:
+  - Start: Apr 1 purchase
+  - End: Dec 9 (observation window ends)
+  - DURATION_DAYS: 252
+  - EVENT: 0 (CENSORED - observation ended, never saw next repurchase)</code></pre>
+
+<h3>Customer B - Winter Coat (One Purchase Only)</h3>
+
+<p>
+<b>Key Point:</b> Customer B bought <b>only once</b>, so their <b>single purchase IS censored</b>.
+</p>
+
+<pre><code>Timeline:
+Nov 20                                    Dec 9
+  |                                         |
+  Buy                                       [Observation Ends]
+
+Survival Records Created:
+
+Record 1:
+  - Start: Nov 20 purchase
+  - End: Dec 9 (observation window ends)
+  - DURATION_DAYS: 19
+  - EVENT: 0 (CENSORED - observation ended, never saw repurchase)</code></pre>
+
+<p>
+<b>The LAST purchase for any customer-product combination is ALWAYS censored.</b> Why? Because we don't know when (or if) they'll repurchase after that.
+</p>
+
+<pre><code>Any Customer-Product Pair:
+
+Purchase #1 -> Purchase #2 -> Purchase #3 -> ... -> LAST Purchase -> ???
+   |              |              |                        |
+   '--------------'--------------'                        '--- CENSORED
+        ALL these create EVENT=1 records          This creates EVENT=0
+        (we saw what happened next)               (we DON'T know what's next)</code></pre>
+
+<h2>Complete Example: End-to-End Feature Engineering</h2>
+
+<h3>Input: Survival DataFrame (Before Features)</h3>
+
+<pre><code>survival_df (before features):
+  CustomerID | StockCode | PurchaseDate | DURATION_DAYS | EVENT
+  12345      | MUG_001   | 2010-01-05   | 7             | 1
+  12345      | MUG_001   | 2010-01-12   | 39            | 1
+  12345      | MUG_001   | 2010-02-20   | 658           | 0
+  12345      | PLATE_02  | 2010-03-01   | 75            | 1
+  67890      | MUG_001   | 2010-11-15   | 389           | 0</code></pre>
+
+<h3>Original Transaction Data</h3>
+
+<pre><code>df_original:
+  CustomerID | StockCode | InvoiceDate | InvoiceNo | Revenue
+  12345      | MUG_001   | 2010-01-05  | INV001    | 19.98
+  12345      | MUG_001   | 2010-01-12  | INV002    | 9.99
+  12345      | MUG_001   | 2010-02-20  | INV003    | 9.99
+  12345      | PLATE_02  | 2010-03-01  | INV001    | 17.97
+  12345      | PLATE_02  | 2010-05-15  | INV004    | 11.98
+  67890      | MUG_001   | 2010-11-15  | INV100    | 9.99</code></pre>
+
+<h3>Step 1: Calculate Aggregations</h3>
+
+<pre><code>customer_first_purchase:
+  12345 -> 2010-01-05
+  67890 -> 2010-11-15
+
+customer_purchase_count:
+  12345 -> 4  (INV001, INV002, INV003, INV004)
+  67890 -> 1
+
+customer_avg_revenue:
+  12345 -> 13.98  ((19.98 + 9.99 + 9.99 + 17.97 + 11.98) / 5)
+  67890 -> 9.99
+
+customer_product_count:
+  (12345, MUG_001)  -> 3
+  (12345, PLATE_02) -> 2
+  (67890, MUG_001)  -> 1
+
+customer_product_first:
+  (12345, MUG_001)  -> 2010-01-05
+  (12345, PLATE_02) -> 2010-03-01
+  (67890, MUG_001)  -> 2010-11-15</code></pre>
+
+<h3>Step 2: Add Features (Raw Values)</h3>
+
+<pre><code>survival_df (after adding features, before scaling):
+
+CustomerID | StockCode | PurchaseDate | RECENCY | FREQUENCY | MONETARY | PRODUCT_FREQ | DAYS_SINCE_FIRST
+12345      | MUG_001   | 2010-01-05   | 0       | 4         | 13.98    | 3            | 0
+12345      | MUG_001   | 2010-01-12   | 7       | 4         | 13.98    | 3            | 7
+12345      | MUG_001   | 2010-02-20   | 46      | 4         | 13.98    | 3            | 46
+12345      | PLATE_02  | 2010-03-01   | 55      | 4         | 13.98    | 2            | 0
+67890      | MUG_001   | 2010-11-15   | 0       | 1         | 9.99     | 1            | 0</code></pre>
+
+<h3>Step 3: Apply Log Transform to MONETARY</h3>
+
+<pre><code class="language-python">LOG_MONETARY = np.log1p(MONETARY)
+
+12345 -> log1p(13.98) = 2.64
+67890 -> log1p(9.99)  = 2.40</code></pre>
+
+<h3>Step 4: Standardize Features</h3>
+
+<pre><code># Calculate means and stds
+RECENCY:           mean=21.6,  std=25.8
+FREQUENCY:         mean=3.4,   std=1.3
+LOG_MONETARY:      mean=2.58,  std=0.11
+PRODUCT_FREQUENCY: mean=2.4,   std=0.9
+DAYS_SINCE_FIRST:  mean=10.6,  std=20.8
+
+# Apply standardization
+survival_df (final, after scaling):
+
+CustomerID | RECENCY | FREQUENCY | LOG_MONETARY | PRODUCT_FREQ | DAYS_SINCE_FIRST
+12345      | -0.84   | 0.46      | 0.55         | 0.67         | -0.51
+12345      | -0.57   | 0.46      | 0.55         | 0.67         | -0.17
+12345      |  0.94   | 0.46      | 0.55         | 0.67         |  1.70
+12345      |  1.29   | 0.46      | 0.55         | -0.44        | -0.51
+67890      | -0.84   | -1.85     | -1.64        | -1.56        | -0.51</code></pre>
+
+<h2>Why These Features Matter for the Cox Model</h2>
+
+<h3>RECENCY</h3>
+<pre><code>Low (new customer)  -> Might churn quickly OR become loyal
+High (established)  -> Stable behavior, predictable repurchase</code></pre>
+
+<h3>FREQUENCY</h3>
+<pre><code>Low (1-2 purchases)   -> Uncertain loyalty, might not return
+High (10+ purchases)  -> Strong engagement, likely to repurchase</code></pre>
+
+<h3>MONETARY (LOG)</h3>
+<pre><code>Low spenders  -> Price sensitive, wait for deals
+High spenders -> Value quality, repurchase regularly</code></pre>
+
+<h3>PRODUCT_FREQUENCY</h3>
+<pre><code>Bought this product 1 time   -> Trying it out
+Bought this product 5+ times -> Product loyalty, will repurchase</code></pre>
+
+<h3>DAYS_SINCE_FIRST</h3>
+<pre><code>0 days    -> First purchase of product, uncertain
+100+ days -> Long relationship with product, stable pattern</code></pre>
+
+<h2>Key Takeaways</h2>
+
+<p>
+<b>Two types of features:</b>
+</p>
+<li>Customer-level (FREQUENCY, MONETARY) &rarr; Same for all products</li>
+<li>Product-level (PRODUCT_FREQUENCY, DAYS_SINCE_FIRST) &rarr; Specific to customer-product pair</li>
+
+<p>
+<b>Transformations matter:</b>
+</p>
+<li>Log transform &rarr; Handles skewed distributions</li>
+<li>Standardization &rarr; Puts features on same scale</li>
+
+<p>
+<b>These features become the X in the Cox model:</b>
+</p>
+
+<pre><code>h(t | X) = h&#8320;_product(t) x exp(&#946;&#8321; x RECENCY + &#946;&#8322; x FREQUENCY + ...)</code></pre>
+
+<p>
+<b>The model learns:</b> which features make customers repurchase faster or slower. For example, "High FREQUENCY customers have 1.5x higher repurchase hazard."
+</p>
+
+<p>
+The stratified Cox model is the gold standard for product-level repurchase prediction.
+</p>
+
+<h2>Business Insights & Recommendations</h2>
+
+<h3>1. Most Important Factors for Repurchase</h3>
+
+<pre><code>                    coef   exp(coef)          p       abs_coef
+covariate
+PRODUCT_FREQUENCY  0.3679   1.4447     0.0000e+00     0.3679
+DAYS_SINCE_FIRST   0.0909   1.0951     1.8065e-20     0.0909
+RECENCY           -0.0594   0.9423     1.0159e-05     0.0594
+LOG_MONETARY       0.0325   1.0330     3.6136e-06     0.0325
+FREQUENCY          0.0197   1.0199     5.0609e-02     0.0197</code></pre>
+
+<p>Interpretation:</p>
+
+<li><b>PRODUCT_FREQUENCY</b>: INCREASES repurchase risk by 44.5% per unit increase (Hazard Ratio: 1.445, p-value: 0.0000)</li>
+<li><b>DAYS_SINCE_FIRST</b>: INCREASES repurchase risk by 9.5% per unit increase (Hazard Ratio: 1.095, p-value: 0.0000)</li>
+<li><b>RECENCY</b>: DECREASES repurchase risk by 5.8% per unit increase (Hazard Ratio: 0.942, p-value: 0.0000)</li>
+
+<h3>2. Product-Level Targeting Opportunities</h3>
+
+<p>Products with highest average 30-day repurchase probability:</p>
+
+<pre><code>            PROB_30D  PROB_60D  PROB_90D  RISK_SCORE  CustomerID
+StockCode
+20725       0.9533    0.9989    0.9999    15.3214     10
+20727       0.8957    0.9932    0.9991    11.0845     10
+85099B      0.8094    0.9741    0.9937    11.4678     10
+22139       0.7032    0.8342    0.8956    10.3694     10
+47566       0.5935    0.8458    0.9056     4.2543     10</code></pre>
+
+<h3>3. Customer Segmentation for Targeting</h3>
+
+<li><b>HIGH INTENT (&gt;60% prob in 30 days):</b> 43 customers &rarr; Gentle reminder email or push notification. They're already primed to buy - don't over-incentivize.</li>
+<li><b>MEDIUM INTENT (30-60% prob in 30 days):</b> 7 customers &rarr; Offer modest discount (10-15%) to accelerate purchase. Personalized product recommendations.</li>
+<li><b>LOW INTENT (&lt;30% prob in 30 days):</b> 0 customers &rarr; Skip for now or try re-engagement campaign. Avoid annoying them with irrelevant offers.</li>
+
+<h3>4. Inventory & Demand Forecasting</h3>
+
+<li>Expected repurchases in next 30 days: <b>40</b> &rarr; Use for inventory planning and demand forecasting</li>
+<li>Expected repurchases in next 60 days: <b>46</b> &rarr; Use for inventory planning and demand forecasting</li>
+<li>Expected repurchases in next 90 days: <b>48</b> &rarr; Use for inventory planning and demand forecasting</li>
